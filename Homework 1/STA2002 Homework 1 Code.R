@@ -15,6 +15,8 @@ gemo_boxplot <- boxplot(times_test_vehicle,
 # Q2 Preface:
 getwd() # 查询R语言的当前工作目录，因为smiles.txt文件在桌面上，所以需要将工作目录设置为桌面
 setwd("C:/Users/12978/Desktop") # 将工作目录设置为桌面
+# 这个是我自己的，先使用getwd()函数进行操作得到目录以后放进setwd()的括号之中，不要忘记""
+# 然后就可以将smiles.txt放入getwd()所在的工作目录之中，才可以读取txt文件
 smiles <- read.table("smiles.txt", header = TRUE) 
 # 先找到smiles.txt文件的路径，然后将其读入R中
 # 打开文件smiles.txt
