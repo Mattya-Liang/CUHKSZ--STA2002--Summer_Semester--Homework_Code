@@ -1,0 +1,181 @@
+# The R programming code for the Homework 1 in the course STA2002 - 2024 summer
+# Q1(a):
+times_test_vehicle <- c(1.75,1.84,2.12,1.92,2.62,2.35,3.09,3.15,
+                        2.53,1.91,3.25,2.83)
+summary(times_test_vehicle)
+mean(times_test_vehicle)
+var(times_test_vehicle)
+sd(times_test_vehicle)
+# Q1(b):
+gemo_boxplot <- boxplot(times_test_vehicle, 
+                        horizontal = TRUE, 
+                        col = "lightblue", 
+                        main = "Boxplot of the times to test a vehicle")
+
+# Q2 Preface:
+getwd() # 查询R语言的当前工作目录，因为smiles.txt文件在桌面上，所以需要将工作目录设置为桌面
+setwd("C:/Users/12978/Desktop") # 将工作目录设置为桌面
+smiles <- read.table("smiles.txt", header = TRUE) 
+# 先找到smiles.txt文件的路径，然后将其读入R中
+# 打开文件smiles.txt
+names(smiles) = c("groups", "scores") # 为数据框添加列名
+attach(smiles) # 将数据框smiles附加到搜索路径上
+
+# Q2(Part 1):
+# Construct histograms and stem-and-leaf plots for each of the four categories. 
+# Comment on the shape of the distribution of the observations in each of the four categories. 
+# Interpret and compare.
+
+# 我们先进行直方图的绘制
+
+tapply(scores,groups,stem) # stem-and-leaf plot
+
+splitgroup = split(scores,groups) # split the data by groups
+attach(splitgroup) # attach the split data to the search path
+par(mfrow=c(2,2)) # set the layout of the plots
+hist(false,main="") # plot the histogram of the false group
+hist(felt,main="") # plot the histogram of the felt group
+hist(miserable,main="") # plot the histogram of the miserable group
+hist(neutral,main="") # plot the histogram of the neutral group
+
+# 现在我们来绘制茎叶图
+
+par(mfrow=c(2,2)) # set the layout of the plots
+stem(false) # plot the stem-and-leaf plot of the false group
+stem(felt) # plot the stem-and-leaf plot of the felt group
+stem(miserable) # plot the stem-and-leaf plot of the miserable group
+stem(neutral) # plot the stem-and-leaf plot of the neutral group
+
+# Q2(Part 2):
+# Obtain the 5-numerical summaries and the corresponding boxplots for all four categories. 
+# Interpret and compare.
+
+# 我们先进行5数总结的计算
+# 只是简单的进行重复就可以了
+
+summary(false)
+var(false)
+sd(false)
+
+summary(felt)
+var(felt)
+sd(felt)
+
+summary(miserable)
+var(miserable)
+sd(miserable)
+
+summary(neutral)
+var(neutral)
+sd(neutral)
+
+#现在我们进行图表的绘制，存在两种方法，一种是直接绘制，一种是使用boxplot函数
+# 我们先进行直接绘制
+
+par(mfrow=c(2,2))
+boxplot(false)
+title("false")
+boxplot(felt)
+title("felt")
+boxplot(miserable)
+title("miserable")
+boxplot(neutral)
+title("neutral")
+
+# 或者我们使用boxplot函数去绘制
+
+par(mfrow=c(1,1))
+boxplot(scores~groups)
+
+# Q2(Part 3):
+# Based on the descriptive statistics and the different graphical displays, 
+# Summarize your findings for the data analysis in the context of the problem.
+
+# 我们现在根据数据去回答前面的两个问题：
+#（a）微笑真的会增加宽大处理吗？（b）不同类型的微笑是否具有不同的效果？
+# 从直方图，茎叶图，箱线图中我们可以看到，不同类型的微笑对于增加宽大处理的效果是不同的
+# 通过均值和方差的计算，三种不同微笑的均值都比中性的表情要大，同时数据之间的方差差异并不大
+# 由此我们判断，微笑的会增加宽大处理的可能性，不同的微笑类型对于增加宽大处理的效果是不同的
+
+# Q3:
+help("prop.table")
+help("qnorm")
+
+n1 <- 200 # CUHKSZ Student
+X1 <- 150 # CUHKSZ Mac
+n2 <- 250 # SUSTech Student
+X2 <- 185 # SUSTech Mac
+
+p1 <- X1 / n1 # The proportion of CUHKSZ students who own a Mac
+p2 <- X2 / n2 # The proportion of SUSTech students who own a Mac
+
+diff_proportion <-  p1 - p2
+
+SE_diff <- sqrt(p1 * (1 - p1) / n1 + p2 * (1 - p2) / n2)
+# We use SE_diff to represent the standard error of the difference between two sample proportions
+# Also be the standard deviation of the sampling distribution of the difference between two sample proportions
+
+print(paste("CUHKSZ Ratio p1 =", p1))
+print(paste("SUSTech Ratio p2 =", p2))
+print(paste("Sample proportion distribution =", diff_proportion))
+print(paste("Sample proportion distribution Error SE =", SE_diff))
+print(paste("The Normal distribution of the difference between two sample proportions is Mean",
+            diff_proportion, "and Variance", SE_diff^2))
+plot(seq(-0.2, 0.2, 0.001), dnorm(seq(-0.2, 0.2, 0.001), mean = diff_proportion, sd = SE_diff), 
+     type = "l", col = "blue", xlab = "Difference in Proportions", ylab = "Density", 
+     main = "Normal Distribution of the Difference in Proportions", lwd = 2)
+
+# Q4(a):
+Xbar1 <- 10.2  # Average of Sample 1
+Xbar2 <- 8.5   # Average of Sample 2
+n1 <- 30       # Size of Sample 1
+n2 <- 25       # Size of Sample 2
+sigma1 <- 2.5  # Standard deviation of Sample 1（Population）
+sigma2 <- 3.0  # Standard deviation of Sample 2（Population）
+
+mu1_hat <- Xbar1
+mu2_hat <- Xbar2
+mu_hat_diff <- mu1_hat - mu2_hat
+
+SE <- sqrt(sigma1^2 / n1 + sigma2^2 / n2)
+
+cat("Unbiased Estimator: mu1 - mu2 =", mu_hat_diff, "\n")
+cat("Standard Error: SE =", SE, "\n")
+
+# Q4(a):
+# 容易发现，我们在unbiased的估计中，我们使用的是样本均值，而不是总体均值
+# 并且两个变量相互独立，因此在计算estimator的时候，我们可以直接使用sample mean去代替population mean
+# 也就是 miu_1 - miu_2 = Xbar_1 - Xbar_2
+# 现在我们来进行计算Standard Deviation
+
+
+# Q4(b):
+
+# Q4(c):
+
+# Q5: Maximum Likelihood Estimation
+
+# Q5(a): Using MOM to estimate the parameter of the exponential distribution
+# 1. MOM: Mean of the exponential distribution is 1 / lambda
+# 2. We find that the lambda hat is 1 / Xbar
+
+# Q5(b): Using MLE to estimate the parameter of the exponential distribution
+# 1. MLE: The likelihood function of the exponential distribution is lambda * exp(-lambda * x)
+# 2. We use the formula to calculate the MLE of lambda
+# 3. The MLE of lambda is the all multipicaltion of the function f(x) = lambda * exp(-lambda * x)
+# 4. The l(x) = log[L(x)], then we use the partial derrivative to calculate the MLE of lambda
+# 5. Let the partial derrivative of l(x) to lambda be 0, then we can get the MLE of lambda
+# 6. The MLE of lambda is 1 / Xbar
+
+# Q5(c):
+Sample <- c(3.8,3.24,1.4,1.22,4.5,4.6)
+mean_sample <- mean(Sample)
+Xbar <- 1 / mean_sample
+cat("The MOM of lambda is", Xbar, "\n")
+cat("The MLE of lambda is", Xbar, "\n")
+
+# Q6:(a)
+
+# Q6:(b)
+
+# Q7:
