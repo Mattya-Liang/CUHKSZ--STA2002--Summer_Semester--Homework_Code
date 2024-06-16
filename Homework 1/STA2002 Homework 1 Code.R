@@ -188,7 +188,8 @@ cat("The MOM of lambda is", Xbar, "\n")
 cat("The MLE of lambda is", Xbar, "\n")
 
 # Q6:(a)
-
+# 我太懒了所以懒得写了
 # Q6:(b)
-
+# 我太懒了所以懒得写了
 # Q7:
+# 我太懒了所以懒得写了
