@@ -126,32 +126,45 @@ plot(seq(-0.2, 0.2, 0.001), dnorm(seq(-0.2, 0.2, 0.001), mean = diff_proportion,
      main = "Normal Distribution of the Difference in Proportions", lwd = 2)
 
 # Q4(a):
-Xbar1 <- 10.2  # Average of Sample 1
-Xbar2 <- 8.5   # Average of Sample 2
-n1 <- 30       # Size of Sample 1
-n2 <- 25       # Size of Sample 2
-sigma1 <- 2.5  # Standard deviation of Sample 1（Population）
-sigma2 <- 3.0  # Standard deviation of Sample 2（Population）
-
-mu1_hat <- Xbar1
-mu2_hat <- Xbar2
-mu_hat_diff <- mu1_hat - mu2_hat
-
-SE <- sqrt(sigma1^2 / n1 + sigma2^2 / n2)
-
-cat("Unbiased Estimator: mu1 - mu2 =", mu_hat_diff, "\n")
-cat("Standard Error: SE =", SE, "\n")
-
-# Q4(a):
+# Easy to find that the sample mean and population are not always the same
 # 容易发现，我们在unbiased的估计中，我们使用的是样本均值，而不是总体均值
 # 并且两个变量相互独立，因此在计算estimator的时候，我们可以直接使用sample mean去代替population mean
 # 也就是 miu_1 - miu_2 = Xbar_1 - Xbar_2
 # 现在我们来进行计算Standard Deviation
 
+mu1 <- Xbar1
+mu2 <- Xbar2
+mu_hat_diff <- mu1_hat - mu2_hat
+
+standard_deviation <- sqrt((sigma1 ^ 2) / n1 + (sigma2 ^ 2 / n2)) 
 
 # Q4(b):
+# Now we have the biased sample and we start to calculate
+# The bias of the estimator X̄1 - X̄2 for μ1 - μ2 can be calculated by taking the expected value of the estimator and subtracting the true parameter value:
+# Bias(X̄1 - X̄2) = E(X̄1 - X̄2) - (μ1 - μ2) = μ1 - μ2 - (μ1 - μ2) = 0.
+# The bias of this estimator is zero, indicating that it is an unbiased estimator for the difference of population means. 
+# As the sample sizes n1 and n2 increase to infinity, the bias remains zero.
 
 # Q4(c):
+# To show that Sp^2 = ((n1 - 1)S1^2 + (n2 - 1)S2^2) / (n1 + n2 - 2) is an unbiased estimator of σ^2, we need to demonstrate that its expected value is equal to σ^2:
+# E(Sp^2) = E(((n1 - 1)S1^2 + (n2 - 1)S2^2) / (n1 + n2 - 2)).
+# Expanding the expression:
+# E(Sp^2) = (n1 - 1)E(S1^2) + (n2 - 1)E(S2^2) / (n1 + n2 - 2).
+# Since S1^2 and S2^2 are unbiased estimators of σ1^2 and σ2^2, respectively, their expected values are equal to the corresponding population variances:
+# E(S1^2) = σ1^2 and E(S2^2) = σ2^2.
+# Substituting these values:
+# E(Sp^2) = (n1 - 1)σ1^2 + (n2 - 1)σ2^2 / (n1 + n2 - 2).
+# Since we assume that both populations have the same variance (σ1^2 = σ2^2 = σ^2), we can simplify further:
+# E(Sp^2) = (n1 - 1)σ^2 + (n2 - 1)σ^2 / (n1 + n2 - 2).
+# Combining terms:
+# E(Sp^2) = ((n1 - 1)σ^2 + (n2 - 1)σ^2) / (n1 + n2 - 2).
+# Factoring out σ^2:
+# E(Sp^2) = (n1 - 1 + n2 - 1)σ^2 / (n1 + n2 - 2).
+# Simplifying:
+# E(Sp^2) = (n1 + n2 - 2)σ^2 / (n1 + n2 - 2).
+#Canceling out the common term (n1 + n2 - 2):
+# E(Sp^2) = σ^2.
+# Therefore, Sp^2 is an unbiased estimator of σ^2.
 
 # Q5: Maximum Likelihood Estimation
 
