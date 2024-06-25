@@ -50,11 +50,19 @@
 # Q3(a):Derive the joint density of (X;K). State clearly the support of (X;K) in the joint density. 
 # Hint: consider conditional distribution and the law of total probability.
 # The joint density of (X;K) can be derived as follows:
-# f(X,K) = f(X|K)*f(K) 
-# f(X|K) is the conditional density of X given K, which is the mixture of K Gaussian distributions.
+# 我们知道：f(X,K)可以被写成f(X = x,K = k)的形式
+# 而这个形式又可以通过条件概率的形式写成f(X = x|K = k)*f(K = k)的形式
+# f(X = x|K = k)是给定K的条件下X的密度，这是一个混合了K个高斯分布的密度
+# f(K = k)是K的密度，这是一个离散的分布，取值为0或1
+# 于是我们可以使用一个条件函数也就是 f_{X|K}(x|k) pi_k来表示
+# 此处的pi_k表示的是K是k的概率，也就是所谓的pi_0或者pi_1
+# 因此，我们可以表示联合函数为f(X,K) = f_{X|K}(x|k) pi_k
+# 也就是N(x|mu_k, sigma_k^2)*pi_k
+
 
 # Q3(b):
-
+# The likelihood function for the i.i.d. sample of size n is given by:
+# L(pi_0, mu_0, sigma_0^2, mu_1, sigma_1^2)
 
 # Q4:
 # Data: 15.2 14.2 14.3 14.2 14.0 13.5 12.2 11.8 14.4 12.5 15.2
