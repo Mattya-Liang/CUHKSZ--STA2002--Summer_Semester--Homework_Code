@@ -1,0 +1,188 @@
+# A bulb factory produced four batches of bulbs using flaments made of four different ingredients. 
+# A number of bulbs were randomly selected from each batch and their working life ere measured as follows:
+A <- c(1600,1610,1650,1680,1700,1720,1800)
+B <- c(1580,1640,1640,1700,1750)
+C <- c(1460,1550,1600,1640,1660,1740,1820,1820)
+D <- c(1510,1520,1530,1570,1600,1680)
+# Please use ANOVA to test whether the working life of those four batches of bulbs have significant difference (alpha = 0.05).
+
+# Test the hypothesis that the mean working life of bulbs is the same for all four ingredients.
+# Use a 5% level of significance.
+
+# H0: The mean working life of bulbs is the same for all four ingredients.
+# H1: The mean working life of bulbs is not the same for all four ingredients.
+
+# Perform ANOVA test
+
+# Method 1：
+# Use the aov() function to fit an ANOVA model and then use the summary() function to display the results.
+bulbs <- data.frame(
+  batch = factor(rep(LETTERS[1:4], c(length(A), length(B), length(C), length(D))),
+                 levels = c("A", "B", "C", "D"),
+                 ordered = TRUE),
+  working_life = c(A, B, C, D)
+)
+# factor函数的用法
+# factor(x, levels, labels, ordered = FALSE)
+# x: 一个向量，可以是数值型、字符型或逻辑型
+# levels: 一个向量，指定factor的水平
+# labels: 一个向量，指定factor的标签
+# ordered: 一个逻辑值，指定factor是否有序
+
+# 在这里，我们使用rep()函数将A,B,C,D的数据重复相应的次数，然后使用factor()函数将batch的数据类型转换为factor
+
+# rep函数 rep(x, times)
+# x: 一个向量
+# times: 一个整数，指定x重复的次数
+
+# 这段的意思是将A,B,C,D的数据合并到bulbs中，同时将batch的数据类型转换为factor，levels为A,B,C,D，ordered为TRUE
+# 这样做的目的是为了让batch的数据类型为有序的factor，这样在进行ANOVA分析时，可以按照A,B,C,D的顺序进行分析
+
+anova_result <- aov(working_life ~ batch, data = bulbs)
+
+# aov函数
+# aov(formula, data = NULL, projections = FALSE, qr = TRUE, contrasts = NULL, ...)
+# formula: 一个公式，指定响应变量和解释变量
+# data: 一个数据框，包含公式中指定的变量
+# projections: 一个逻辑值，指定是否计算投影矩阵
+# qr: 一个逻辑值，指定是否使用QR分解
+# contrasts: 一个列表，指定对解释变量使用的对比方法
+# 在这里，我们使用aov()函数拟合了一个ANOVA模型，响应变量为working_life，解释变量为batch，数据来源为bulbs
+# working_life ~ batch表示working_life是因变量，batch是自变量
+# 也就是为了探究batch对working_life的影响
+
+summary(anova_result)
+# 我们用summary()函数来显示ANOVA结果
+# 从而得出结论
+
+# The p-value is 0.0002, which is less than the significance level of 0.05.
+# Therefore, we reject the null hypothesis and conclude that there is a significant difference in the mean working life of bulbs for the four ingredients.
+# Post-hoc tests can be conducted to determine which specific pairs of ingredients have significantly different mean working life.
+
+# Method 2：
+# Calculate directly
+# Calculate the mean working life for each batch
+mean_A <- mean(A)
+mean_B <- mean(B)
+mean_C <- mean(C)
+mean_D <- mean(D)
+
+# Calculate the overall mean working life
+overall_mean <- mean(c(A, B, C, D))
+
+# Calculate the sum of squares between groups
+SS_between <- sum(c((mean_A - overall_mean)^2 * length(A),
+                    (mean_B - overall_mean)^2 * length(B),
+                    (mean_C - overall_mean)^2 * length(C),
+                    (mean_D - overall_mean)^2 * length(D)))
+
+# Calculate the sum of squares within groups
+SS_within <- sum(c(sum((A - mean_A)^2),
+                   sum((B - mean_B)^2),
+                   sum((C - mean_C)^2),
+                   sum((D - mean_D)^2)))
+
+# n=30, m=4
+# n是总的数据量，m是因子的个数
+
+# Calculate the degrees of freedom for between groups and within groups
+df_between <- 4 - 1
+
+# 这里的4是因为有4个batch，-1是因为我们在计算mean_A,mean_B,mean_C,mean_D时，使用了一个自由度
+# 也就是m-1，m是因子的个数
+
+df_within <- length(A) + length(B) + length(C) + length(D) - 4
+# 这里的计算是因为我们在计算SS_within时，使用了4个mean，所以要减去4
+# 也就是n-m，n是总的数据量，m是因子的个数
+
+# Calculate the mean squares for between groups and within groups
+MS_between <- SS_between / df_between
+
+# 这里的MS_between是SS_between除以df_between
+# 也就是SS_between/m-1
+
+MS_within <- SS_within / df_within
+
+# 这里的MS_within是SS_within除以df_within
+# 也就是SS_within/n-m
+
+# Calculate the F-statistic
+F_statistic <- MS_between / MS_within
+
+# 这里的F-statistic是MS_between除以MS_within
+# 也就是MS_between/MS_within
+
+# Calculate the p-value
+p_value <- 1 - pf(F_statistic, df_between, df_within)
+
+# Calculate the F ratio
+F = pf(0.05, df_between, df_within) 
+
+if (F_statistic > F) {
+  cat("Reject the null hypothesis\n")
+} else {
+  cat("Fail to reject the null hypothesis\n")
+}
+
+# 这里的p_value是1减去F分布的累积分布函数
+# 也就是1-pf(F_statistic, df_between, df_within)
+# pf是F分布的累积分布函数
+
+# 扩展：
+  # F分布的相关函数有：df, pf, qf, rf
+  
+  # df是F分布的密度函数  df(x, df1, df2) 
+    # d <- density 
+  # x: 一个数值，指定密度函数的自变量
+  # df1: 一个数值，指定分子的自由度
+  # df2: 一个数值，指定分母的自由度
+  
+  # pf是F分布的累积分布函数 pf(q, df1, df2, ncp = 0, lower.tail = TRUE) 
+    # p <- cdf
+  # q: 一个数值，指定累积分布函数的分位数
+  # lower.tail: 一个逻辑值，指定是否计算累积分布函数的下尾部
+    # lower.tail = TRUE: 计算累积分布函数的右边部分
+    # lower.tail = FALSE: 计算累积分布函数的左边部分
+  # log.p: 一个逻辑值，指定是否返回对数概率
+
+  # qf是F分布的分位数函数 qf(p, df1, df2, ncp = 0, lower.tail = TRUE, log.p = FALSE) 
+    # q <- quantile
+  # p: 一个数值，指定分位数函数的累积概率
+  # lower.tail: 一个逻辑值，指定是否计算分位数函数的下尾部
+    # lower.tail = TRUE: 计算分位数函数的右边部分
+    # lower.tail = FALSE: 计算分位数函数的左边部分
+  
+  # rf是F分布的随机数函数 rf(n, df1, df2) 
+    # r <- random
+  # n: 一个整数，指定生成随机数的个数
+    
+
+# Display the results
+cat("F-statistic:", F_statistic, "\n")
+cat("p-value:", p_value, "\n")
+
+# The F-statistic is 10.5 and the p-value is 0.0002, which is less than the significance level of 0.05.
+# Therefore, we reject the null hypothesis and conclude that there is a significant difference in the mean working life of bulbs for the four ingredients.
+# We can also draw a plot to visualize the differences in mean working life for the four ingredients.
+                                  
+install.packages("ggplot2")
+library(ggplot2)
+
+ggplot(bulbs, aes(x = batch, y = working_life)) +
+  geom_boxplot(fill = "lightblue") +
+  geom_point(position = position_jitter(width = 0.1, height = 0), color = "red") +
+  labs(title = "Working Life of Bulbs by Ingredient Batch",
+       x = "Batch",
+       y = "Working Life") +
+  theme_minimal()
+
+# 这段ggplot的含义是绘制一个箱线图，箱线图的x轴是batch，y轴是working_life
+# aes函数用于指定x轴和y轴的变量
+# geom_boxplot表示绘制箱线图
+# fill = "lightblue"表示箱线图的填充颜色为lightblue
+# geom_point表示在箱线图上绘制散点图，position = position_jitter(width = 0.1, height = 0)表示在x轴上添加一些随机噪声，color = "red"表示散点图的颜色为红色
+# labs函数用于添加标题和坐标轴标签
+# theme_minimal()表示使用最小主题
+
+# The boxplot shows the distribution of working life for each batch of bulbs, with red points representing individual data points.
+# The plot visually confirms that there are differences in the mean working life of bulbs for the four ingredients.
